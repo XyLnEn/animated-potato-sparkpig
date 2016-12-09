@@ -5,7 +5,6 @@ import org.apache.spark._
 
   val rawData = sc.textFile("datas/etl-xaaCC-MAIN.txt")
 
-  println("*************************************debut*************************************")
   var lines = rawData.map{ s =>
     val parts = s.split("\t")
     var links = parts(2).substring(1,parts(2).length -1).split(",")
@@ -16,6 +15,6 @@ import org.apache.spark._
     val size = urls.size
     urls.map(url => (url, pagerank / size))
   }
-  val newPagerank = contribs.reduceByKey((x,y) => x+y).mapValues(v => 0.15 + 0.85*v)
 
-  newPagerank.saveAsTextFile("result")
+  val newPagerank = contribs.reduceByKey((x,y) => x+y).mapValues(v => 0.15 + 0.85*v)
+  newPagerank.sortBy(-_._2).saveAsTextFile("result")
