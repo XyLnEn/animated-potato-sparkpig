@@ -8,7 +8,7 @@ ordered = ORDER new_pagerank BY pagerank DESC;
 STORE ordered INTO '$docs_out' USING PigStorage('\t');""")
 
 # 'd' tangling value in pagerank model
-params = { 'd': '0.5', 'docs_in': "datas/etl-xaaCC-MAIN-20160924173739-00000-ip-10-143-35-109.ec2.internal.warc.txt" }
+params = { 'd': '0.85', 'docs_in': "datas/etl-xaaCC-MAIN.txt" }
 
 for i in range(5):
 	output = "output/pagerank_data_" + str(i + 1)

@@ -3,9 +3,7 @@ import org.apache.spark._
 
   case class Row(url : String, pagerank: Double, urls: Array[String])
 
-  case class Data(data:String)
-
-  val rawData = sc.textFile("datas/etl-xaaCC-MAIN-20160924173739-00000-ip-10-143-35-109.ec2.internal.warc.txt")
+  val rawData = sc.textFile("datas/etl-xaaCC-MAIN.txt")
 
   println("*************************************debut*************************************")
   var lines = rawData.map{ s =>
@@ -18,10 +16,6 @@ import org.apache.spark._
     val size = urls.size
     urls.map(url => (url, pagerank / size))
   }
-  val tmp = contribs.reduceByKey((x,y) => x+y).mapValues(v => 0.15 + 0.85*v)
+  val newPagerank = contribs.reduceByKey((x,y) => x+y).mapValues(v => 0.15 + 0.85*v)
 
-  val output = tmp.collect()
-
-  val pw = new PrintWriter(new File("result.txt"))
-  output.foreach(tup => pw.write(tup._1 + " has rank: " + tup._2 + ".\n"))
-  pw.close
+  newPagerank.saveAsTextFile("result")
